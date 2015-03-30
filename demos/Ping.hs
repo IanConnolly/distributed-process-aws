@@ -16,7 +16,7 @@ import Control.Distributed.Process
   , ProcessMonitorNotification(..)
   )
 import Control.Distributed.Process.Closure (remotable, mkClosure)
-import Control.Distributed.Process.Backend.Azure
+import Control.Distributed.Process.Backend.AWS
 import qualified Data.ByteString.Lazy as BSL (readFile, writeFile)
 
 pingServer :: () -> Backend -> Process ()
@@ -62,14 +62,14 @@ main = do
     "list":sid:x509:pkey:_ -> do
       -- List all available cloud services
       -- (useful, but not strictly necessary for the example)
-      params <- defaultAzureParameters sid x509 pkey
-      css <- cloudServices (azureSetup params)
+      params <- defaultAWSParameters sid x509 pkey
+      css <- cloudServices (awsSetup params)
       mapM_ print css
 
     cmd:sid:x509:pkey:user:cloudService:virtualMachine:port:_ -> do
       -- Initialize the backend and find the right VM
-      params <- defaultAzureParameters sid x509 pkey
-      let params' = params { azureSshUserName = user }
+      params <- defaultAWSParameters sid x509 pkey
+      let params' = params { awsSshUserName = user }
       backend <- initializeBackend params' cloudService
       Just vm <- findNamedVM backend virtualMachine
 

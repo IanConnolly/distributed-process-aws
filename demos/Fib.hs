@@ -13,7 +13,7 @@ import Control.Distributed.Process
   , receiveChan
   , spawnLocal
   )
-import Control.Distributed.Process.Backend.Azure
+import Control.Distributed.Process.Backend.AWS
 import Control.Distributed.Process.Closure
   ( remotable
   , remotableDecl
@@ -62,8 +62,8 @@ main = do
   case args of
     "onvm":args' -> onVmMain (__remoteTable . __remoteTableDecl) args'
     [sid, x509, pkey, user, cloudService, n] -> do
-      params <- defaultAzureParameters sid x509 pkey
-      let params' = params { azureSshUserName = user }
+      params <- defaultAWSParameters sid x509 pkey
+      let params' = params { awsSshUserName = user }
       backend <- initializeBackend params' cloudService
       vms <- findVMs backend
       nids <- forM vms $ \vm -> spawnNodeOnVM backend vm "8080"

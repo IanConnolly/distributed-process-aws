@@ -6,7 +6,7 @@ import Control.Monad (unless, forever)
 import Control.Monad.IO.Class (liftIO)
 import Control.Distributed.Process (Process, expect)
 import Control.Distributed.Process.Closure (remotable, mkClosure)
-import Control.Distributed.Process.Backend.Azure
+import Control.Distributed.Process.Backend.AWS
 
 echoRemote :: () -> Backend -> Process ()
 echoRemote () _backend = forever $ do
@@ -35,9 +35,9 @@ main = do
       onVmMain __remoteTable args'
 
     sid:x509:pkey:user:cloudService:virtualMachine:port:_ -> do
-      -- Initialize the Azure backend
-      params <- defaultAzureParameters sid x509 pkey
-      let params' = params { azureSshUserName = user }
+      -- Initialize the AWS backend
+      params <- defaultAWSParameters sid x509 pkey
+      let params' = params { awsSshUserName = user }
       backend <- initializeBackend params' cloudService
 
       -- Find the specified virtual machine
