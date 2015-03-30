@@ -63,7 +63,7 @@ main = do
       -- List all available cloud services
       -- (useful, but not strictly necessary for the example)
       params <- defaultAWSParameters sid x509 pkey
-      css <- cloudServices (awsSetup params)
+      css <- cloudServices
       mapM_ print css
 
     cmd:sid:x509:pkey:user:cloudService:virtualMachine:port:_ -> do

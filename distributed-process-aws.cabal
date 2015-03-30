@@ -1,11 +1,11 @@
 name:                distributed-process-aws
 version:             0.1.0.0
-synopsis:            AWS EC2 Backend for Cloud Haskell http://haskell-distributed.github.com     
+synopsis:            AWS EC2 Backend for Cloud Haskell http://haskell-distributed.github.com
 homepage:            https://github.com/IanConnolly/distributed-process-aws
 license:             MIT
 license-file:        LICENSE
 author:              Ian Connolly
-maintainer:          ian@connolly.io          
+maintainer:          ian@connolly.io
 category:            Control
 build-type:          Simple
 cabal-version:       >=1.10
@@ -14,7 +14,7 @@ flag build-demos
   description: Build the demos
   default:     False
 
-library  
+library
   build-depends:       base >=4.7 && <4.8,
                        filepath,
                        executable-path,
@@ -24,7 +24,7 @@ library
                        mtl,
                        unix,
                        binary,
-                       transformers,  
+                       transformers,
                        cloud-haskell,
                        network-transport,
                        network-transport-tcp,
@@ -44,11 +44,24 @@ library
 
 executable cloud-haskell-aws-echo
   if flag(build-demos)
-    Build-Depends:   base,
-                     distributed-process-aws,
-                     cloud-haskell,
-                     distributed-process,
-                     transformers
+    build-depends:     base >=4.7 && <4.8,
+                       filepath,
+                       executable-path,
+                       libssh2,
+                       pureMD5,
+                       bytestring,
+                       mtl,
+                       unix,
+                       binary,
+                       transformers,
+                       cloud-haskell,
+                       network-transport,
+                       network-transport-tcp,
+                       rank1dynamic,
+                       distributed-process,
+                       distributed-process-aws,
+                       distributed-static,
+                       aws-service-api
   else
     buildable: False
   Main-Is:           demos/Echo.hs
@@ -56,15 +69,24 @@ executable cloud-haskell-aws-echo
 
 executable cloud-haskell-aws-ping
   if flag(build-demos)
-    Build-Depends:   base,
-                     distributed-process-aws,
-                     cloud-haskell,
-                     distributed-process,
-                     transformers,
-                     bytestring,
-                     binary,
-                     mtl,
-                     libssh2
+    build-depends:     base >=4.7 && <4.8,
+                       filepath,
+                       executable-path,
+                       libssh2,
+                       pureMD5,
+                       bytestring,
+                       mtl,
+                       unix,
+                       binary,
+                       transformers,
+                       cloud-haskell,
+                       network-transport,
+                       network-transport-tcp,
+                       rank1dynamic,
+                       distributed-process,
+                       distributed-process-aws,
+                       distributed-static,
+                       aws-service-api
   else
     buildable: False
   Main-Is:           demos/Ping.hs
@@ -72,17 +94,26 @@ executable cloud-haskell-aws-ping
 
 executable cloud-haskell-aws-fib
   if flag(build-demos)
-    Build-Depends:   base,
-                     distributed-process-aws,
-                     cloud-haskell,
-                     distributed-process,
-                     transformers,
-                     bytestring,
-                     binary,
-                     binary-generic,
-                     rank1dynamic,
-                     distributed-static,
-                     random 
+    build-depends:     base >=4.7 && <4.8,
+                       filepath,
+                       executable-path,
+                       libssh2,
+                       pureMD5,
+                       bytestring,
+                       mtl,
+                       unix,
+                       binary,
+                       binary-generic,
+                       random,
+                       transformers,
+                       cloud-haskell,
+                       network-transport,
+                       network-transport-tcp,
+                       rank1dynamic,
+                       distributed-process,
+                       distributed-process-aws,
+                       distributed-static,
+                       aws-service-api
   else
     buildable: False
   Main-Is:           demos/Fib.hs
