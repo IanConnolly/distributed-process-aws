@@ -188,11 +188,10 @@ instance Binary AWSParameters where
   get =
     AWSParameters <$> get <*> get <*> get <*> get <*> get <*> get <*> get <*> get
 
-defaultAWSParameters :: String    -- ^ AWS subscription ID
-                     -> FilePath  -- ^ Path to X509 certificate
+defaultAWSParameters :: FilePath  -- ^ Path to X509 certificate
                      -> FilePath  -- ^ Path to private key
                      -> IO AWSParameters
-defaultAWSParameters sid x509 pkey = do
+defaultAWSParameters x509 pkey = do
   home  <- getEnv "HOME"
   user  <- getEnv "USER"
   self  <- getExecutablePath
@@ -213,7 +212,7 @@ initializeBackend :: AWSParameters
                   -> IO Backend
 initializeBackend params cloudService =
   return Backend {
-      findVMs   = apiFindVMs params cloudService
+      findVMs   = apiFindVMs cloudService
     , copyToVM  = apiCopyToVM params
     , checkMD5  = apiCheckMD5 params
     , callOnVM  = apiCallOnVM params cloudService
@@ -221,8 +220,8 @@ initializeBackend params cloudService =
     }
 
 -- | Find virtual machines
-apiFindVMs :: AWSParameters -> String -> IO [VirtualMachine]
-apiFindVMs params cloudService = do
+apiFindVMs :: String -> IO [VirtualMachine]
+apiFindVMs cloudService = do
   css <- AWS.cloudServices
   case filter ((== cloudService) . cloudServiceName) css of
     [cs] -> return $ cloudServiceVMs cs
@@ -263,7 +262,6 @@ runOnVM :: Bool
         -> IO a
 runOnVM bg params cloudService vm port ppair =
   withSSH2 params vm $ \s -> do
-    -- TODO: reduce duplication with apiCallOnVM
     let exe = "PATH=. " ++ awsSshRemotePath params
            ++ " onvm"
            ++ " " ++ vmIpAddress vm

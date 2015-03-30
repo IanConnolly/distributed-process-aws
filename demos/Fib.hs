@@ -61,8 +61,8 @@ main = do
   args <- getArgs
   case args of
     "onvm":args' -> onVmMain (__remoteTable . __remoteTableDecl) args'
-    [sid, x509, pkey, user, cloudService, n] -> do
-      params <- defaultAWSParameters sid x509 pkey
+    [x509, pkey, user, cloudService, n] -> do
+      params <- defaultAWSParameters x509 pkey
       let params' = params { awsSshUserName = user }
       backend <- initializeBackend params' cloudService
       vms <- findVMs backend

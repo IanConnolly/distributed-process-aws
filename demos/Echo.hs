@@ -34,9 +34,9 @@ main = do
       -- ('callOnVM' will provide the right arguments)
       onVmMain __remoteTable args'
 
-    sid:x509:pkey:user:cloudService:virtualMachine:port:_ -> do
+    x509:pkey:user:cloudService:virtualMachine:port:_ -> do
       -- Initialize the AWS backend
-      params <- defaultAWSParameters sid x509 pkey
+      params <- defaultAWSParameters x509 pkey
       let params' = params { awsSshUserName = user }
       backend <- initializeBackend params' cloudService
 
