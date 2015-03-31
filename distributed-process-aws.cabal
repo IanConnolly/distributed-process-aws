@@ -1,5 +1,5 @@
 name:                distributed-process-aws
-version:             0.1.0.0
+version:             0.2.0.0
 synopsis:            AWS EC2 Backend for Cloud Haskell http://haskell-distributed.github.com
 homepage:            https://github.com/IanConnolly/distributed-process-aws
 license:             MIT
@@ -15,7 +15,7 @@ flag build-demos
   default:     False
 
 library
-  build-depends:       base >=4.7 && <4.8,
+  build-depends:       base <4.8,
                        filepath,
                        executable-path,
                        libssh2,
@@ -44,7 +44,7 @@ library
 
 executable cloud-haskell-aws-echo
   if flag(build-demos)
-    build-depends:     base >=4.7 && <4.8,
+    build-depends:     base <4.8,
                        filepath,
                        executable-path,
                        libssh2,
@@ -65,11 +65,11 @@ executable cloud-haskell-aws-echo
   else
     buildable: False
   Main-Is:           demos/Echo.hs
-  ghc-options:       -Wall
+
 
 executable cloud-haskell-aws-ping
   if flag(build-demos)
-    build-depends:     base >=4.7 && <4.8,
+    build-depends:     base <4.8,
                        filepath,
                        executable-path,
                        libssh2,
@@ -90,11 +90,10 @@ executable cloud-haskell-aws-ping
   else
     buildable: False
   Main-Is:           demos/Ping.hs
-  ghc-options:       -Wall
 
 executable cloud-haskell-aws-fib
   if flag(build-demos)
-    build-depends:     base >=4.7 && <4.8,
+    build-depends:     base <4.8,
                        filepath,
                        executable-path,
                        libssh2,
