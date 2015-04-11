@@ -12,7 +12,6 @@ module Control.Distributed.Process.Backend.AWS
   , CloudService(..)
   , VirtualMachine(..)
   , Endpoint(..)
-  , AWSSetup
   , AWS.cloudServices
     -- * Remote and local processes
   , ProcessPair(..)
@@ -146,11 +145,9 @@ import Network.AWS.ServiceManagement
   ( CloudService(..)
   , VirtualMachine(..)
   , Endpoint(..)
-  , AWSSetup
   )
 import qualified Network.AWS.ServiceManagement as AWS
   ( cloudServices
-  , awsSetup
   , vmSshEndpoint
   )
 
@@ -165,7 +162,7 @@ data Backend = Backend {
 
 -- | AWS connection parameters
 data AWSParameters = AWSParameters {
-    awsSetup           :: AWSSetup
+    awsSetup           :: FilePath
   , awsSshUserName     :: FilePath
   , awsSshPublicKey    :: FilePath
   , awsSshPrivateKey   :: FilePath
@@ -188,16 +185,14 @@ instance Binary AWSParameters where
   get =
     AWSParameters <$> get <*> get <*> get <*> get <*> get <*> get <*> get <*> get
 
-defaultAWSParameters :: FilePath  -- ^ Path to X509 certificate
-                     -> FilePath  -- ^ Path to private key
+defaultAWSParameters :: FilePath  -- Path to aws.config
                      -> IO AWSParameters
-defaultAWSParameters x509 pkey = do
+defaultAWSParameters conf = do
   home  <- getEnv "HOME"
   user  <- getEnv "USER"
   self  <- getExecutablePath
-  setup <- AWS.awsSetup x509 pkey
   return AWSParameters
-    { awsSetup         = setup
+    { awsSetup         = conf
     , awsSshUserName   = user
     , awsSshPublicKey  = home </> ".ssh" </> "id_rsa.pub"
     , awsSshPrivateKey = home </> ".ssh" </> "id_rsa"
@@ -230,8 +225,9 @@ apiFindVMs cloudService = do
 -- | Start a CH node on the given virtual machine
 apiCopyToVM :: AWSParameters -> VirtualMachine -> IO ()
 apiCopyToVM params vm =
-  void . withSSH2 params vm $ \s -> catchSshError s $
+  void . withSSH2 params vm $ \s -> catchSshError s $ do
     SSH.scpSendFile s 0o700 (awsSshLocalPath params) (awsSshRemotePath params)
+    SSH.scpSendFile s 0o700 (awsSetup params) (takeFileName $ awsSetup params)
 
 -- | Call a process on a VM
 apiCallOnVM :: AWSParameters

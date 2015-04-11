@@ -59,16 +59,16 @@ main = do
       -- Pass execution to 'onVmMain' if we are running on the VM
       onVmMain __remoteTable args'
 
-    "list":x509:pkey:_ -> do
+    "list":conf:_ -> do
       -- List all available cloud services
       -- (useful, but not strictly necessary for the example)
-      params <- defaultAWSParameters x509 pkey
+      params <- defaultAWSParameters conf
       css <- cloudServices
       mapM_ print css
 
-    cmd:x509:pkey:user:cloudService:virtualMachine:port:_ -> do
+    cmd:conf:user:cloudService:virtualMachine:port:_ -> do
       -- Initialize the backend and find the right VM
-      params <- defaultAWSParameters x509 pkey
+      params <- defaultAWSParameters conf
       let params' = params { awsSshUserName = user }
       backend <- initializeBackend params' cloudService
       Just vm <- findNamedVM backend virtualMachine
