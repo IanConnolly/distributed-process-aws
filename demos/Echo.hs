@@ -39,9 +39,9 @@ main = do
       params <- defaultAWSParameters x509 pkey
       let params' = params { awsSshUserName = user }
       backend <- initializeBackend params' cloudService
-
       -- Find the specified virtual machine
       Just vm <- findNamedVM backend virtualMachine
+      copyToVM backend vm
 
       -- Run the echo client proper
       callOnVM backend vm port $
