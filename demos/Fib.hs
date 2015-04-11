@@ -67,8 +67,8 @@ main = do
       backend <- initializeBackend params' cloudService
       vms <- findVMs backend
       forM vms $ \vm -> copyToVM backend vm
-      nids <- forM vms $ \vm -> spawnNodeOnVM backend vm "8080"
-      callOnVM backend (head vms) "8081" $
+      nids <- forM vms $ \vm -> spawnNodeOnVM backend vm "10080"
+      callOnVM backend (head vms) "10081" $
         ProcessPair ($(mkClosure 'remoteFib) (nids, read n :: Integer))
                     printResult
     _ ->

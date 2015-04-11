@@ -1,5 +1,5 @@
 name:                distributed-process-aws
-version:             0.2.0.0
+version:             0.3.0.0
 synopsis:            AWS EC2 Backend for Cloud Haskell http://haskell-distributed.github.com
 homepage:            https://github.com/IanConnolly/distributed-process-aws
 license:             MIT
