@@ -13,6 +13,11 @@ module Control.Distributed.Process.Backend.AWS
   , VirtualMachine(..)
   , Endpoint(..)
   , AWS.cloudServices
+  , AWS.createService
+  , AWS.scaleUpService
+  , AWS.scaleDownService
+  , AWS.addVM
+  , AWS.destroyVM
     -- * Remote and local processes
   , ProcessPair(..)
   , RemoteProcess
@@ -145,10 +150,16 @@ import Network.AWS.ServiceManagement
   ( CloudService(..)
   , VirtualMachine(..)
   , Endpoint(..)
+  , awsConfig
   )
 import qualified Network.AWS.ServiceManagement as AWS
   ( cloudServices
   , vmSshEndpoint
+  , createService
+  , scaleUpService
+  , scaleDownService
+  , addVM
+  , destroyVM
   )
 
 
@@ -207,7 +218,7 @@ initializeBackend :: AWSParameters
                   -> IO Backend
 initializeBackend params cloudService =
   return Backend {
-      findVMs   = apiFindVMs cloudService
+      findVMs   = apiFindVMs params cloudService
     , copyToVM  = apiCopyToVM params
     , checkMD5  = apiCheckMD5 params
     , callOnVM  = apiCallOnVM params cloudService
@@ -215,9 +226,10 @@ initializeBackend params cloudService =
     }
 
 -- | Find virtual machines
-apiFindVMs :: String -> IO [VirtualMachine]
-apiFindVMs cloudService = do
-  css <- AWS.cloudServices
+apiFindVMs :: AWSParameters -> String -> IO [VirtualMachine]
+apiFindVMs params cloudService = do
+  config <- awsConfig $ awsSetup params
+  css <- AWS.cloudServices config
   case filter ((== cloudService) . cloudServiceName) css of
     [cs] -> return $ cloudServiceVMs cs
     _    -> return []

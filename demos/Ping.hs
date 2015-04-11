@@ -59,13 +59,6 @@ main = do
       -- Pass execution to 'onVmMain' if we are running on the VM
       onVmMain __remoteTable args'
 
-    "list":conf:_ -> do
-      -- List all available cloud services
-      -- (useful, but not strictly necessary for the example)
-      params <- defaultAWSParameters conf
-      css <- cloudServices
-      mapM_ print css
-
     cmd:conf:user:cloudService:virtualMachine:port:_ -> do
       -- Initialize the backend and find the right VM
       params <- defaultAWSParameters conf
