@@ -1,4 +1,16 @@
-Copyright Ian Connolly, 2015
+This library is an adaption of the distributed-process-azure
+library written by Duncan Coutts, Nicolas Wu, and Edsko de Vries, whose
+copyright is held by Well-Typed LLP.
+
+It is adapted to work with the aws-service-api library written
+by Ian Connolly.
+
+I would like to thank Duncan, Nicholas, and Edsko for their excellent work.
+
+All code originally written by them is available under the following
+BSD3 license.
+
+Copyright Well-Typed LLP, 2011-2012
 
 All rights reserved.
 

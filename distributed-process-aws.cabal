@@ -1,8 +1,8 @@
 name:                distributed-process-aws
-version:             1.0.0.0
+version:             1.2.0.0
 synopsis:            AWS EC2 Backend for Cloud Haskell http://haskell-distributed.github.com
 homepage:            https://github.com/IanConnolly/distributed-process-aws
-license:             MIT
+license:             BSD3
 license-file:        LICENSE
 author:              Ian Connolly
 maintainer:          ian@connolly.io
@@ -116,3 +116,53 @@ executable cloud-haskell-aws-fib
   else
     buildable: False
   Main-Is:           demos/Fib.hs
+
+executable cloud-haskell-aws-scale-fib
+  if flag(build-demos)
+    build-depends:     base <4.8,
+                       filepath,
+                       executable-path,
+                       libssh2,
+                       pureMD5,
+                       bytestring,
+                       mtl,
+                       unix,
+                       binary,
+                       binary-generic,
+                       random,
+                       transformers,
+                       cloud-haskell,
+                       network-transport,
+                       network-transport-tcp,
+                       rank1dynamic,
+                       distributed-process,
+                       distributed-process-aws,
+                       distributed-static,
+                       aws-service-api
+  else
+    buildable: False
+  Main-Is:           demos/ScaleFib.hs
+
+executable cloud-haskell-aws-scale-echo
+  if flag(build-demos)
+    build-depends:     base <4.8,
+                       filepath,
+                       executable-path,
+                       libssh2,
+                       pureMD5,
+                       bytestring,
+                       mtl,
+                       unix,
+                       binary,
+                       transformers,
+                       cloud-haskell,
+                       network-transport,
+                       network-transport-tcp,
+                       rank1dynamic,
+                       distributed-process,
+                       distributed-process-aws,
+                       distributed-static,
+                       aws-service-api
+  else
+    buildable: False
+  Main-Is:           demos/ScaleEcho.hs

@@ -18,6 +18,7 @@ module Control.Distributed.Process.Backend.AWS
   , AWS.scaleDownService
   , AWS.addVM
   , AWS.destroyVM
+  , awsSetup
     -- * Remote and local processes
   , ProcessPair(..)
   , RemoteProcess
@@ -150,7 +151,7 @@ import Network.AWS.ServiceManagement
   ( CloudService(..)
   , VirtualMachine(..)
   , Endpoint(..)
-  , awsConfig
+  , awsSetup
   )
 import qualified Network.AWS.ServiceManagement as AWS
   ( cloudServices
@@ -173,7 +174,7 @@ data Backend = Backend {
 
 -- | AWS connection parameters
 data AWSParameters = AWSParameters {
-    awsSetup           :: FilePath
+    awsConf            :: FilePath
   , awsSshUserName     :: FilePath
   , awsSshPublicKey    :: FilePath
   , awsSshPrivateKey   :: FilePath
@@ -185,7 +186,7 @@ data AWSParameters = AWSParameters {
 
 instance Binary AWSParameters where
   put params = do
-    put (awsSetup params)
+    put (awsConf params)
     put (awsSshUserName params)
     put (awsSshPublicKey params)
     put (awsSshPrivateKey params)
@@ -203,7 +204,7 @@ defaultAWSParameters conf = do
   user  <- getEnv "USER"
   self  <- getExecutablePath
   return AWSParameters
-    { awsSetup         = conf
+    { awsConf          = conf
     , awsSshUserName   = user
     , awsSshPublicKey  = home </> ".ssh" </> "id_rsa.pub"
     , awsSshPrivateKey = home </> ".ssh" </> "id_rsa"
@@ -228,7 +229,7 @@ initializeBackend params cloudService =
 -- | Find virtual machines
 apiFindVMs :: AWSParameters -> String -> IO [VirtualMachine]
 apiFindVMs params cloudService = do
-  config <- awsConfig $ awsSetup params
+  config <- awsSetup $ awsConf params
   css <- AWS.cloudServices config
   case filter ((== cloudService) . cloudServiceName) css of
     [cs] -> return $ cloudServiceVMs cs
@@ -239,7 +240,7 @@ apiCopyToVM :: AWSParameters -> VirtualMachine -> IO ()
 apiCopyToVM params vm =
   void . withSSH2 params vm $ \s -> catchSshError s $ do
     SSH.scpSendFile s 0o700 (awsSshLocalPath params) (awsSshRemotePath params)
-    SSH.scpSendFile s 0o700 (awsSetup params) (takeFileName $ awsSetup params)
+    SSH.scpSendFile s 0o700 (awsConf params) (takeFileName $ awsConf params)
 
 -- | Call a process on a VM
 apiCallOnVM :: AWSParameters
