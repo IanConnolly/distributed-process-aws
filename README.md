@@ -25,3 +25,11 @@ new CloudServices and VirtualMachines and the scaling of said CloudServices.
 You'll need to generate an Amazon EC2 image with libssh2-1 installed.
 
 Fill in the ```aws.config``` file with the relevant information.
+
+
+
+### Outstanding issues before pushing to Hackage
+
+* Need to sort something out with aws-sdk. Current version on Hackage (0.12.4) doesn't build. Presumably the newer versions on Github do. Ask someone to push them?
+* Wrap some/all of the aws-service-api functions in the distributed-process-aws abstractions (specifically surrounding ```Backend```)
+* Performance fixes (createVM in aws-service-api stands out right now)
